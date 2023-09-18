@@ -23,7 +23,7 @@ class DataClass:
         self.Imax_A_relative_time = list()
 
     def read_csv(self, filepath, filename):
-        with open("../" + filepath + filename + ".csv", encoding='utf-8') as row_file:
+        with open("../model_data/csv_files/" + filepath + filename + ".csv", encoding='utf-8') as row_file:
             file_reader = csv.reader(row_file, delimiter=",")
             count = 0
             for row in file_reader:

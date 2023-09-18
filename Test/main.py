@@ -1,21 +1,21 @@
 import xml.dom.minidom
 
-from DATA.DataClass import DataClass
+from data_class.DataClass import DataClass
 from XML_Parser.ModelData import ModelData
 
 quantity_of_graph = 25
 data = []
 
 
-# for i in range(quantity_of_graph):
-#     tau = (i + 1) * 20
-#     data.append(DataClass())
-#
-#     data[i].read_csv("csv_files/data2/", "tau_" + str(tau))
-#     data[i].set_Imax()
-#     data[i].time_shift(data[i].Imax_A_time[0])
-#     data[i].set_relative_time(tau)
-#     data[i].set_relative_Imax(data[i].Imax_A[0])
+for i in range(quantity_of_graph):
+    tau = (i + 1) * 20
+    data.append(DataClass())
+
+    data[i].read_csv("data2/", "tau_" + str(tau))
+    data[i].set_Imax()
+    data[i].time_shift(data[i].Imax_A_time[0])
+    data[i].set_relative_time(tau)
+    data[i].set_relative_Imax(data[i].Imax_A[0])
 
 
 # print(data[24].time)
