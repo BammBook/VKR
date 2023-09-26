@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parametrs>
-    <U_nom>230</U_nom>
-    <X>1</X>
-    <R>1</R>
+    <U_nom>230.0</U_nom>
+    <f>50.0</f>
+    <X>1.0</X>
+    <R>1.0</R>
+    <B_s>1.25</B_s>
+    <B_r>0.0</B_r>
 </parametrs>
 
