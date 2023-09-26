@@ -1,7 +1,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from data_class.DataClassNP import DataClass
+from PyResearch.data_сlass.DataClass import DataClass
 
 def plot_instant_value(data: DataClass,  tau=0, y_title='Iₐ(t), кА'):
     mpl.rcParams['font.family'] = 'Times New Roman'

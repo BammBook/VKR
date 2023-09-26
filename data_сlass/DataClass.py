@@ -1,9 +1,9 @@
 import numpy as np
-from data_class.read_csv import read_csv
+from PyResearch.data_сlass.read_csv import read_csv
 
 
 def set_Imax_and_t_max(I_A, time):
-    eps = 0.05
+    eps = 0.04
     Imax_A = []
     Imax_A_time = []
     for i in range(1, len(time) - 2, 1):
