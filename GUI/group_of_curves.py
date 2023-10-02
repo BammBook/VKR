@@ -9,7 +9,7 @@ _TYPES = Literal["all", "half"]
 
 def plot_group_of_curves(data: list[DataClass],
                          tau: list[int],
-                         y_title='Iₐ(t), o.е.',
+                         y_title='K_з(t), o.е.',
                          show_: _TYPES = "half"):
     if show_ == "half":
         half_checker = True
