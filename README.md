@@ -1,2 +1,2 @@
 # VKR
-Researching for my VKR using Python
+Research for my VKR using Python
