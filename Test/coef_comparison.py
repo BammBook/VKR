@@ -43,7 +43,7 @@ for i in range(quantity_of_graph):
     data[i].Imax_A_relative_time_partial = box_plot_data
     data[i].Imax_A_relative_partial = y_data
 
-    args = approximation('exp_3',
+    args = approximation('exp_1',
                          box_plot_data,
                          y_data,
                          print_coef=False)
@@ -70,8 +70,29 @@ average_C1 = round(np.sum(coef[1]) / np.size(coef[1]), 3)
 # print(average_C1)
 
 
+# k_d = math.sqrt(2)
+x_data = np.arange(0, 5, 0.01)
+generic_curve_1 = (2 - 1.21 + 0.42)*exp_1(x_data, average_C0, average_C1)
+generic_curve_2 = (2 - 1.38 + 0.42)*exp_1(x_data, average_C0, average_C1)
+# generic_curve_1 = exp_1(x_data, average_C0, average_C1)
+# generic_curve_2 = exp_1(x_data, average_C0, average_C1)
+
+mpl.rcParams['font.family'] = 'Times New Roman'
+plt.plot(x_data, generic_curve_1, color='black')
+plt.plot(x_data, generic_curve_2, color='grey')
+plt.xlim([0, x_data[-1]])
+plt.xlabel('t/'r'$\tau$, о.е.', loc="center", fontsize=12)
+plt.ylabel('C_б(1), о.е.', loc="center", fontsize=12)
+plt.legend(['Холоднокатаная сталь', 'Горячекатаная сталь'])
+plt.grid(True)
+plt.show()
+
+
+
+
+
 """compare coefficient"""
-coef_comparison(coef, tau)
+# coef_comparison(coef, tau)
 #
 # current_num = 20
 #
@@ -156,7 +177,7 @@ error = []
 # матрица со строками разной длины. Значеняи ошибки от времени
 for i in range(quantity_of_graph):
 
-    approximated_curve = exp_1(data[i].Imax_A_relative_time,
+    approximated_curve = exp_2(data[i].Imax_A_relative_time,
                                average_C0,
                                average_C1)
     # model_data
@@ -201,7 +222,22 @@ plt.plot(max_err_time, max_err, color='red')
 plt.legend([''r'$\delta$ = 10%'])
 box = plt.boxplot(box_plot_data, labels=t_labels)
 
-[item.get_ydata() for item in box['whiskers']]
+medians = [round(item.get_ydata()[1], 2) for item in box['medians']]
+average_medians = np.round(np.average(medians), 2)
+for med in medians:
+    print(med)
+print('average medians = ', average_medians)
 
 
-plt.show()
+# total = 0
+# for i in range(len(box_plot_data)):
+#     counter = 0
+#     for j in range(len(box_plot_data[i])):
+#         if box_plot_data[i][j] > 10:
+#             counter += 1
+#             total += 1
+#     print(counter)
+# print('total = ', total)
+
+# plt.show()
+
