@@ -2,7 +2,7 @@ import math
 
 from PyResearch.data_сlass.DataClass import DataClass
 
-from PyResearch.GUI import instant_value as gui_iv
+from PyResearch.GUI import plot_value as gui_iv
 from PyResearch.GUI import generic_curve as gui_generic
 from PyResearch.GUI import compare_two_graph as gui_two_graph
 from PyResearch.GUI.compare_two_graph import set_relative_error

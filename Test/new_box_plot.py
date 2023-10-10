@@ -9,7 +9,7 @@ import matplotlib as mpl
 from scipy.optimize import least_squares
 from scipy.optimize import curve_fit
 import numpy as np
-from PyResearch.GUI import instant_value as gui_iv
+from PyResearch.GUI import plot_value as gui_iv
 from PyResearch.GUI import group_of_curves as gui_gc
 from PyResearch.GUI import generic_curve as gui_generic
 from PyResearch.approximation.approximation import *

@@ -5,12 +5,14 @@ from PyResearch.data_сlass.DataClass import DataClass
 from typing import Literal
 
 _TYPES = Literal["all", "half"]
+_PHASES = Literal["A", "B", "C"]
 
 
 def plot_group_of_curves(data: list[DataClass],
                          tau: list[int],
                          y_title='K_з(t), o.е.',
-                         show_: _TYPES = "half"):
+                         show_: _TYPES = "half",
+                         phase_: _PHASES = "A"):
     if show_ == "half":
         half_checker = True
     elif show_ == "all":
@@ -27,10 +29,21 @@ def plot_group_of_curves(data: list[DataClass],
         if i % 2 == 1 and i != len(data) and half_checker:
             pass
         else:
-            plt.plot(data[i].Imax_A_time,
-                     data[i].Imax_A_relative,
-                     label=''r'$\tau$ = ' + str(tau[i]) + ' мс')
             legend.append(''r'$\tau$ = ' + str(tau[i]) + ' мс')
+            if phase_ == "A":
+                plt.plot(data[i].Imax_A_time,
+                         data[i].Imax_A_relative,
+                         label=''r'$\tau$ = ' + str(tau[i]) + ' мс')
+            elif phase_ == "B":
+                plt.plot(data[i].Imax_B_time,
+                         data[i].Imax_B_relative,
+                         label=''r'$\tau$ = ' + str(tau[i]) + ' мс')
+            elif phase_ == "C":
+                plt.plot(data[i].Imax_C_time,
+                         data[i].Imax_C_relative,
+                         label=''r'$\tau$ = ' + str(tau[i]) + ' мс')
+            else:
+                raise ValueError("Invalid sim type. Expected one of: %s" % _PHASES)
 
     plt.xlabel('t, с', loc="center", fontsize=12)
     plt.ylabel(y_title, loc="center", fontsize=12)
