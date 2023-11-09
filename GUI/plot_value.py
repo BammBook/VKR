@@ -1,13 +1,16 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from PyResearch.data_сlass.DataClass import DataClass
+from data_сlass.DataClass import DataClass
 
 
 def plot_value(time: np.ndarray,
                y_data: np.ndarray,
                tau=None,
                phase='A'):
+    """
+    вывод графика с RTDS
+    """
 
     mpl.rcParams['font.family'] = 'Times New Roman'
 

@@ -54,6 +54,7 @@ for i in range(quantity_of_graph):
         coef_A[j, i] = round(args_A[j], 3)
         coef_B[j, i] = round(args_B[j], 3)
         coef_C[j, i] = round(args_C[j], 3)
+gui_gc.plot_group_of_curves(data, tau, show_="half")
 
 average_C0_A = round(np.average(coef_A[0]), 3)
 average_C1_A = round(np.average(coef_A[1]), 3)

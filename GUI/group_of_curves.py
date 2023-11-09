@@ -1,7 +1,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from PyResearch.data_сlass.DataClass import DataClass
+from data_сlass.DataClass import DataClass
 from typing import Literal
 
 _TYPES = Literal["all", "half"]
@@ -13,6 +13,9 @@ def plot_group_of_curves(data: list[DataClass],
                          y_title='K_з(t), o.е.',
                          show_: _TYPES = "half",
                          phase_: _PHASES = "A"):
+    """
+    график кривых затухания с разными tau
+    """
     if show_ == "half":
         half_checker = True
     elif show_ == "all":

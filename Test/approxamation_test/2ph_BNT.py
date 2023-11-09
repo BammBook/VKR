@@ -1,23 +1,21 @@
 import math
 
 import numpy
-import seaborn
 
-from PyResearch.data_сlass.DataClass import DataClass
-import matplotlib.pyplot as plt
+from data_сlass.DataClass import DataClass
+from matplotlib import pyplot as plt
 import matplotlib as mpl
 from scipy.optimize import least_squares
 from scipy.optimize import curve_fit
 import numpy as np
-from PyResearch.GUI.plot_value import plot_value, inst_and_max_curve
-from PyResearch.GUI import group_of_curves as gui_gc
-from PyResearch.GUI import generic_curve as gui_generic
-from PyResearch.approximation.approximation import *
-from PyResearch.GUI.coef_comparison import coef_comparison
-from PyResearch.XML_Parser.ModelData import ModelData
-from PyResearch.GUI import compare_two_graph as gui_two_graph
-from PyResearch.GUI.compare_two_graph import set_relative_error
-import seaborn as sns
+from GUI.plot_value import plot_value, inst_and_max_curve
+from GUI import group_of_curves as gui_gc
+from GUI import generic_curve as gui_generic
+from approximation.approximation import *
+from GUI.coef_comparison import coef_comparison
+from XML_Parser.ModelData import ModelData
+from GUI import compare_two_graph as gui_two_graph
+from GUI.compare_two_graph import set_relative_error
 
 data = []
 tau = []
@@ -34,7 +32,7 @@ for i in range(quantity_of_graph):
     1ph_BNT/, 2ph_BNT/, 3ph_BNT_(2_type)/, 3ph_BNT_(2_type)/
     """
     tau.append((i + 1) * 20)
-    data.append(DataClass("csv", "2ph_BNT/", "tau_" + str(tau[i]), tau=tau[i],  time_duration=time_duration))
+    data.append(DataClass("csv", "2ph_True_Gnd/", "tau_" + str(tau[i]), tau=tau[i],  time_duration=time_duration))
 
     args_B = approximation('exp_1',
                            data[i].Imax_B_relative_time_partial,
@@ -70,6 +68,8 @@ plt.plot(data[current_num].Imax_B_relative_time, data[current_num].Imax_B_relati
 plt.plot(data[current_num].Imax_C_relative_time, data[current_num].Imax_C_relative, color='red')
 plt.legend(['Imax_B', 'Imax_C'])
 plt.show()
+
+print(data)
 
 
 

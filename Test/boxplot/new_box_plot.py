@@ -1,7 +1,6 @@
 import math
 
 import numpy
-import seaborn
 
 from PyResearch.data_сlass.DataClass import DataClass
 import matplotlib.pyplot as plt

@@ -1,7 +1,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from PyResearch.data_сlass.DataClass import DataClass
+from data_сlass.DataClass import DataClass
 from typing import Literal
 
 _TYPES = Literal["full", "partial"]
@@ -10,6 +10,10 @@ _TYPES = Literal["full", "partial"]
 def plot_generic_curve(data: list[DataClass],
                        display_mode: _TYPES = "partial",
                        max_value: int = 5):
+    """
+    обобщенная кривая
+    """
+
     mpl.rcParams['font.family'] = 'Times New Roman'
     mpl.rcParams['lines.linewidth'] = 0.9
 

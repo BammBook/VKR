@@ -1,9 +1,11 @@
-from scipy.optimize import least_squares
 import numpy as np
 from scipy.optimize import curve_fit
 from typing import Literal
 from functools import partial
 
+"""
+функции для аппроксимации кривых затухания
+"""
 
 def exp_1(values_x, coef0, coef1):
     """custom"""
@@ -17,18 +19,14 @@ def exp_3(values_x, coef0, coef1):
     """second_type_exp"""
     return coef0 * values_x ** coef1
 
-def exp_5(values_x, coef0, coef1, coef2):
-    """first_type_exp"""
-    return coef0 + coef1 * np.exp(values_x * coef2)
-
 def exp_4(values_x, tau, coef0, coef1, coef2):
 
     return np.exp(coef0 * values_x + coef1 * tau * 1e-3 + coef2 * (values_x / (tau * 1e-3)))
 
 
-model_list_name = Literal['exp_1', 'exp_2', 'exp_3', 'exp_5']
+model_list_name = Literal['exp_1', 'exp_2', 'exp_3']
 
-model_dictionary = {'exp_1': exp_1, 'exp_2': exp_2, 'exp_3': exp_3, 'exp_5': exp_5}
+model_dictionary = {'exp_1': exp_1, 'exp_2': exp_2, 'exp_3': exp_3}
 
 
 def approximation(function_name: model_list_name,
