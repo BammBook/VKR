@@ -1,20 +1,4 @@
-import math
-
-import matplotlib.pyplot as plt
-import numpy
-
-from data_сlass.DataClass import DataClass
-
-import numpy as np
-
-from GUI import group_of_curves as gui_gc
-from GUI import generic_curve as gui_generic
-from approximation.approximation import *
-from GUI.coef_comparison import coef_comparison
-
 from data_сlass.help_functions import *
-from Test.all_BNT_types import compare_max
-from XML_Parser.ModelData import ModelData
 from GUI.compare_max import compare_max
 from GUI.compare_two_graph import *
 
@@ -37,9 +21,9 @@ average_C0_diff_time_C = -0.3
 average_C1_diff_time_C = 0.828
 
 B_s = md.B_s
-B_r_A = 0.0165
+B_r_A = 0.0212
 B_r_B = 0.0
-B_r_C = -0.0165
+B_r_C = -0.0212
 
 
 ang_1ph = [1 * math.pi, 0 * math.pi]  # phase A
@@ -59,23 +43,25 @@ coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5 * B_r_A
 
 
 
-# data = DataClass("csv", "110кV_new/", "110_BTN1phase", tau=tau, time_duration=time_duration)
-#
-#
-#
-# compare_max(data_time=data.time,
-#             data_max_time=data.Imax_A_time[:len(data.Imax_A_relative_time_partial)]+0.009,
-#             data_Imax_relative_time=data.Imax_A_relative_time_partial,
-#             data_current=data.I_A,
-#             data_max_current=data.Imax_A[:len(data.Imax_A_relative_time_partial)],
-#             average_C0=average_C0_1ph,
-#             average_C1=average_C1_1ph,
-#             tau=tau,
-#             coef_A=coef_A_1ph_cold,
-#             phase='A',
-#             title="Однофазный БТН",
-#             model_data="Model110",
-#             error=True)
+data = DataClass("csv", "110кV_new/", "110_BTN1phase", tau=tau, time_duration=time_duration)
+
+
+# plt.plot(data.time, data.I_A)
+# plt.show()
+
+compare_max(data_time=data.time,
+            data_max_time=data.Imax_A_time[:len(data.Imax_A_relative_time_partial)]+0.0095,
+            data_Imax_relative_time=data.Imax_A_relative_time_partial,
+            data_current=data.I_A,
+            data_max_current=data.Imax_A[:len(data.Imax_A_relative_time_partial)],
+            average_C0=average_C0_1ph,
+            average_C1=average_C1_1ph,
+            tau=tau,
+            coef_A=coef_A_1ph_cold,
+            phase='A',
+            title="Однофазный БТН",
+            model_data="Model110",
+            error=True)
 
 
 
@@ -85,21 +71,21 @@ coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5 * B_r_A
 # # print(data.Imax_C)
 # # plt.show()
 # compare_max(data_time=data.time,
-#             data_max_time=data.Imax_C_time[:len(data.Imax_C_relative_time_partial)]+0.0085,
-#             data_Imax_relative_time=data.Imax_C_relative_time_partial,
-#             data_current=-data.I_C,
-#             data_max_current=-data.Imax_C[:len(data.Imax_C_relative_time_partial)],
+#             data_max_time=data.Imax_B_time[:len(data.Imax_B_relative_time_partial)]+0.0105,
+#             data_Imax_relative_time=data.Imax_B_relative_time_partial,
+#             data_current=data.I_B,
+#             data_max_current=data.Imax_B[:len(data.Imax_B_relative_time_partial)],
 #             average_C0=average_C0_1ph,
 #             average_C1=average_C1_1ph,
 #             tau=tau,
 #             coef_A=coef_A_2ph_cold,
-#             phase='C',
+#             phase='B',
 #             title="Двухфазный БТН",
-#             model_data="Model220",
+#             model_data="Model110",
 #             error=True)
-# # #
+# #
 #
-# data = DataClass("csv", "220kV_new/", "220_BTN3phase90", tau=tau, time_duration=time_duration)
+# data = DataClass("csv", "110кV_new/", "110_BTN3phase90", tau=tau, time_duration=time_duration)
 #
 # compare_max(data_time=data.time,
 #             data_max_time=data.Imax_B_time[:len(data.Imax_B_relative_time_partial)]+0.011,
@@ -112,10 +98,10 @@ coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5 * B_r_A
 #             coef_A=coef_A_3ph_1_cold,
 #             phase='B',
 #             title="Трехфазный БТН\n(1 типа)",
-#             model_data="Model220",
+#             model_data="Model110",
 #             error=True)
-# #
-# data = DataClass("csv", "220kV_new/", "220_BTN3phase0", tau=tau, time_duration=time_duration)
+#
+# data = DataClass("csv", "110кV_new/", "110_BTN3phase0", tau=tau, time_duration=time_duration)
 #
 # compare_max(data_time=data.time,
 #             data_max_time=data.Imax_A_time[:len(data.Imax_A_relative_time_partial)]+0.01,
@@ -128,16 +114,16 @@ coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5 * B_r_A
 #             coef_A=coef_A_3ph_2_cold,
 #             phase='A',
 #             title="Трехфазный БТН\n(2 типа)",
-#             model_data="Model220",
+#             model_data="Model110",
 #             error=True)
 #
-# data = DataClass("csv", "220kV_new/", "220_BTN3phaseA0B90C90", tau=tau, time_duration=time_duration)
-# plt.plot(data.time, data.I_A)
-# plt.show()
-# print(data.Imax_A_time)
-# print(data.Imax_A)
-# plt.plot(data.Imax_A_time, data.Imax_A)
-# plt.show()
+# data = DataClass("csv", "110кV_new/", "110_BTN3phaseA0B90C90", tau=tau, time_duration=time_duration)
+# # plt.plot(data.time, data.I_A)
+# # plt.show()
+# # print(data.Imax_A_time)
+# # print(data.Imax_A)
+# # plt.plot(data.Imax_A_time, data.Imax_A)
+# # plt.show()
 # compare_max(data_time=data.time,
 #             data_max_time=data.Imax_C_time[:len(data.Imax_C_relative_time_partial)]+0.012,
 #             data_Imax_relative_time=data.Imax_C_relative_time_partial,
@@ -149,5 +135,5 @@ coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5 * B_r_A
 #             coef_A=coef_A_diff_time_cold,
 #             phase='C',
 #             title="Последовательный БТН\n(разновр.)",
-#             model_data="Model220",
+#             model_data="Model110",
 #             error=True)

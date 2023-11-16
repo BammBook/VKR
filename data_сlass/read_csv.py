@@ -5,7 +5,9 @@ def read_csv(filepath, filename):
 
     output_data = []
 
-    with open("../model_data/csv_files/" + filepath + filename + ".csv", encoding='utf-8') as row_file:
+    # with open("../model_data/csv_files/" + filepath + filename + ".csv", encoding='utf-8') as row_file:
+    with open("C:/Study/VKR/PyResearch/model_data/csv_files/" + filepath + filename + ".csv", encoding='utf-8') as row_file:
+
 
         file_reader = csv.reader(row_file, delimiter=",")
         count = 0

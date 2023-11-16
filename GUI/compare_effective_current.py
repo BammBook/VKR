@@ -16,10 +16,9 @@ RELAY_TYPES = Literal['phase', 'linear', 'zero_sequence']
 columns = {'1ph': 0, '2ph': 1, '3ph1': 2, '3ph2': 3, 'diff_time': 4}
 rows = {'phase': 0, 'linear': 1, 'zero_sequence': 2}
 
-
 SCHEME_COEFFICIENTS = np.array([[1, 1, 1, 1, 1],
-                                [1, math.sqrt(3), math.sqrt(3), math.sqrt(3), 1],
-                                [1, 0.4, 0.4, 0.4, 1]])
+                                [1, math.sqrt(3), math.sqrt(3), 1.26, 1.7],
+                                [1, 1, 1, 0.7, 0.7]])
 
 
 def compare_effective_current(eff_curr_time,
@@ -56,10 +55,10 @@ def compare_effective_current(eff_curr_time,
     plt.plot(eff_curr_time, eff_curr_data, color='red')
     plt.plot(model_Imax_time, curve_first_harm_eff, color='blue')
     plt.xlabel('t, с', loc="center", fontsize=12)
-    plt.ylabel(f'I_д_{phase}(t), кА', loc="center", fontsize=12)
-    plt.legend([f'I_д_{phase} Фактическое (RTDS)', f'I_д_{phase} Рассчитанное'])
+    plt.ylabel(f'I_1г_{phase}, кА', loc="center", fontsize=12)
+    plt.legend([f'I_1г_{phase} Фактическое (RTDS)', f'I_1г_{phase} Рассчитанное'])
 
-    plt.xlim([0, model_Imax_time[-1]])
+    # plt.xlim([0, model_Imax_time[-1]])
 
     max = curve_first_harm_eff[0]
 
@@ -67,7 +66,34 @@ def compare_effective_current(eff_curr_time,
 
     plt.text(0.7 * model_Imax_time[-1],
              0.7 * max,
-             f'{title}\nФаза {phase}',
+             f'{title}\n{phase}',
              bbox=box)
 
+    """relative error"""
+    samle_rate = 50e-6
+    time_ax_points = model_Imax_time * samle_rate
+
+    buffer_time = []
+    buffer_current = []
+    for i in range(len(eff_curr_time)):
+        if i % 400 == 0 and eff_curr_time[i] > 0 and eff_curr_time[i] <= model_Imax_time[-1]:
+            buffer_time.append(round(eff_curr_time[i], 2))
+            buffer_current.append(eff_curr_data[i])
+
+    buffer_time = np.array(buffer_time)
+    buffer_current = np.array(buffer_current)
+
+    print(f'len_curve_first_harm_eff = {len(curve_first_harm_eff)}')
+    print(f'len_eff_curr_data = {len(buffer_time)}')
+
+    print(model_Imax_relative_time)
+    print()
+    print(buffer_time)
+
+
+    # error = (buffer_current - curve_first_harm_eff)/buffer_current
+    # print(error)
+
     plt.show()
+
+

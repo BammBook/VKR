@@ -29,7 +29,7 @@ def compare_max(data_time, data_max_time,
                                average_C1)
     md = ModelData(model_data)
     # X = 2 * math.pi * md.f * md.R * tau * 1e-3  # X is variable
-    approximated_graph = math.sqrt(2 / 3) * md.U_nom / (math.sqrt(md.X ** 2 + md.R ** 2)) * approximated_curve * (1 + coef_A)
+    approximated_graph = np.abs(math.sqrt(2 / 3) * md.U_nom / (math.sqrt(md.X ** 2 + md.R ** 2)) * approximated_curve * (1 + coef_A))
 
     """мгновенные и огибающая"""
     presentation()
@@ -52,7 +52,9 @@ def compare_max(data_time, data_max_time,
 
     box = dict(facecolor='white', edgecolor='black')
     if np.abs(max) > np.abs(min):
-        y_position = 0.7 * max
+        # y_position = 0.7 * max
+        y_position = 0.65 * np.max(approximated_graph)
+
     else:
         y_position = 0.7 * min
     plt.text(0.7 * data_max_time[-1],

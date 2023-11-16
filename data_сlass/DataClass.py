@@ -10,7 +10,7 @@ def set_Imax_and_t_max(I_ph: np.ndarray,
     """
     функция определяет максимумы тока при БТН (огибающая максимумов)
     """
-    eps = 0.2
+    eps = 0.4
     max_counter = 99  # костыль для 99 точек
     counter = 0  # костыль для 99 точек
     Imax_ph = []
@@ -21,13 +21,18 @@ def set_Imax_and_t_max(I_ph: np.ndarray,
         number_of_points = len(time_data)
 
     for i in range(1, number_of_points - 2, 1):
-        if np.abs(I_ph[i]) - np.abs(I_ph[i + 1]) > 0 and \
-                np.abs(I_ph[i - 1]) - np.abs(I_ph[i]) < 0 and \
-                np.abs(I_ph[i]) > eps and counter < max_counter:
+        # if np.abs(I_ph[i]) - np.abs(I_ph[i + 1]) > 0 and \
+        #         np.abs(I_ph[i - 1]) - np.abs(I_ph[i]) < 0 and \
+        #         np.abs(I_ph[i]) > eps and counter < max_counter:
+        #
+        #     Imax_ph.append(I_ph[i])
+        #     Imax_ph_time.append(time_data[i])
+        #     counter += 1
+        if I_ph[i+1] > I_ph[i] and I_ph[i-1] < I_ph[i] and np.abs(I_ph[i]) > eps and counter < max_counter:
 
-            Imax_ph.append(I_ph[i])
-            Imax_ph_time.append(time_data[i])
-            counter += 1
+                Imax_ph.append(I_ph[i])
+                Imax_ph_time.append(time_data[i])
+                counter += 1
 
     if len(Imax_ph) == 0:
         return np.array([0]), np.array([0])
