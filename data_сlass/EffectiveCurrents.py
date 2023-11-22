@@ -2,6 +2,13 @@ import numpy as np
 
 from data_сlass.read_csv import read_csv
 
+def time_axis_shift(data):
+    """считает сколько значений меньше нуля"""
+    counter = 0
+    for item in data:
+        if item <= 0:
+            counter += 1
+    return counter
 
 class EffectiveCurrents:
     """
@@ -15,6 +22,8 @@ class EffectiveCurrents:
         except ValueError:
             print("Specify the supported source data file type")
         else:
+            # counter = time_axis_shift(data[0])
+
             self.time = np.array(data[0])
 
             self.I_3I0_eff = np.array(data[1])

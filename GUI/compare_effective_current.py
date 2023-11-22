@@ -25,6 +25,7 @@ def compare_effective_current(eff_curr_time,
                               eff_curr_data,
                               model_Imax_relative_time,
                               model_Imax_time,
+                              time_shift,
                               model_data_name,
                               average_C0,
                               average_C1,
@@ -32,8 +33,10 @@ def compare_effective_current(eff_curr_time,
                               relay_type: RELAY_TYPES,
                               coef_A,
                               title,
-                              phase):
-
+                              phase,
+                              print_error=True,
+                              error_step=0.1,
+                              sample_rate=50e-6):
     """
     Сравнение действующего тока снятого с модели и расчетного
     """
@@ -53,12 +56,12 @@ def compare_effective_current(eff_curr_time,
     presentation()
     plt.grid(True)
     plt.plot(eff_curr_time, eff_curr_data, color='red')
-    plt.plot(model_Imax_time, curve_first_harm_eff, color='blue')
+    plt.plot(model_Imax_time + time_shift, curve_first_harm_eff, color='blue')
     plt.xlabel('t, с', loc="center", fontsize=12)
     plt.ylabel(f'I_1г_{phase}, кА', loc="center", fontsize=12)
     plt.legend([f'I_1г_{phase} Фактическое (RTDS)', f'I_1г_{phase} Рассчитанное'])
 
-    # plt.xlim([0, model_Imax_time[-1]])
+    plt.xlim([0, model_Imax_time[-1]])
 
     max = curve_first_harm_eff[0]
 
@@ -70,30 +73,38 @@ def compare_effective_current(eff_curr_time,
              bbox=box)
 
     """relative error"""
-    samle_rate = 50e-6
-    time_ax_points = model_Imax_time * samle_rate
+    if print_error:
 
-    buffer_time = []
-    buffer_current = []
-    for i in range(len(eff_curr_time)):
-        if i % 400 == 0 and eff_curr_time[i] > 0 and eff_curr_time[i] <= model_Imax_time[-1]:
-            buffer_time.append(round(eff_curr_time[i], 2))
-            buffer_current.append(eff_curr_data[i])
+        buffer_time = []
+        buffer_current = []
 
-    buffer_time = np.array(buffer_time)
-    buffer_current = np.array(buffer_current)
+        start = 0
+        for time in eff_curr_time:
+            if time < 0:
+                start += 1
 
-    print(f'len_curve_first_harm_eff = {len(curve_first_harm_eff)}')
-    print(f'len_eff_curr_data = {len(buffer_time)}')
+        shift = int(time_shift / sample_rate)
 
-    print(model_Imax_relative_time)
-    print()
-    print(buffer_time)
+        for i in range(shift, len(eff_curr_time) - start - shift):
+            if i % 400 == shift and 0 < eff_curr_time[i + start] <= model_Imax_time[-1] and eff_curr_data[i + start] > 0.05:
+                buffer_time.append(eff_curr_time[i + start])
+                buffer_current.append(eff_curr_data[i + start])
 
+        buffer_time = np.array(buffer_time)
+        buffer_current = np.array(buffer_current)
+        # print(f'\nlen_curve_first_harm_eff (calculated) = {len(curve_first_harm_eff)}')
+        # print(f'time calc {model_Imax_time + time_shift}')
+        # print(f'calculated current: {curve_first_harm_eff}\n')
+        # print(f'len_eff_curr_data (from model) = {len(buffer_time)}')
+        # print(f'time (model) {buffer_time}')
+        # print(f'model current: {buffer_current}\n')
 
-    # error = (buffer_current - curve_first_harm_eff)/buffer_current
-    # print(error)
-
+        error = np.abs(buffer_current - curve_first_harm_eff[:len(buffer_current)]) * 100 / buffer_current
+        counter = 0
+        print(title, phase)
+        for i in range(len(error)):
+            if i % int(error_step/0.02) == 0 and counter < 5:
+                print("%.2f" % error[i])
+                counter += 1
+        print()
     plt.show()
-
-

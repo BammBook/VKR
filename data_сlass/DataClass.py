@@ -2,6 +2,45 @@ import numpy as np
 
 from data_сlass.read_csv import read_csv
 
+# def set_Imax_and_t_max(I_ph: np.ndarray,
+#                        time_data: np.ndarray,
+#                        time_duration: float,
+#                        sampling_rate: float = 50e-6):
+#
+#     """
+#     функция определяет максимумы тока при БТН (огибающая максимумов)
+#     """
+#     eps = 0.3
+#     max_counter = 99  # костыль для 99 точек
+#     counter = 0  # костыль для 99 точек
+#     Imax_ph = []
+#     Imax_ph_time = []
+#
+#
+#     number_of_points = int(time_duration / sampling_rate)
+#     if number_of_points > len(time_data):
+#         number_of_points = len(time_data)
+#
+#     # for i in range(0, number_of_points):
+#     #     filtering_counter = 0
+#     #     for j in range(0, filtering_window):
+#
+#
+#     for i in range(1, number_of_points - 2, 1):
+#         if np.abs(I_ph[i]) - np.abs(I_ph[i + 1]) > 0 and \
+#                 np.abs(I_ph[i - 1]) - np.abs(I_ph[i]) < 0 and \
+#                 np.abs(I_ph[i]) > eps and counter < max_counter:
+#
+#             Imax_ph.append(I_ph[i])
+#             Imax_ph_time.append(time_data[i])
+#             counter += 1
+#
+#     if len(Imax_ph) == 0:
+#         return np.array([0]), np.array([0])
+#     else:
+#         return np.array(Imax_ph), np.array(Imax_ph_time)
+
+
 def set_Imax_and_t_max(I_ph: np.ndarray,
                        time_data: np.ndarray,
                        time_duration: float,
@@ -9,30 +48,45 @@ def set_Imax_and_t_max(I_ph: np.ndarray,
 
     """
     функция определяет максимумы тока при БТН (огибающая максимумов)
+    значения берутся начиная с времени t=0
+    на каждом периодле находится один максимум + его метка времени. на одном периоде при БТН не возникает
+    более одного максимума
     """
-    eps = 0.4
+
+    def start_finder(time: np.ndarray):
+        counter = 0
+        for i in range(len(time)):
+            if time[i] < 0:
+                counter += 1
+        return counter
+
+    eps = 0.2  # отсекает шумы снизу
+
     max_counter = 99  # костыль для 99 точек
     counter = 0  # костыль для 99 точек
+
     Imax_ph = []
     Imax_ph_time = []
 
-    number_of_points = int(time_duration / sampling_rate)
-    if number_of_points > len(time_data):
-        number_of_points = len(time_data)
+    T = 20e-3  # industrial frequency period
+    filtering_window_size = T/sampling_rate  # 400 points/per period
 
-    for i in range(1, number_of_points - 2, 1):
-        # if np.abs(I_ph[i]) - np.abs(I_ph[i + 1]) > 0 and \
-        #         np.abs(I_ph[i - 1]) - np.abs(I_ph[i]) < 0 and \
-        #         np.abs(I_ph[i]) > eps and counter < max_counter:
-        #
-        #     Imax_ph.append(I_ph[i])
-        #     Imax_ph_time.append(time_data[i])
-        #     counter += 1
-        if I_ph[i+1] > I_ph[i] and I_ph[i-1] < I_ph[i] and np.abs(I_ph[i]) > eps and counter < max_counter:
+    start = start_finder(time_data)
 
-                Imax_ph.append(I_ph[i])
-                Imax_ph_time.append(time_data[i])
-                counter += 1
+    number_of_periods = int(len(time_data[start:]) // filtering_window_size)
+
+    for i in range(0, number_of_periods-1):
+        first_index = int(start + i * filtering_window_size)
+        last_index = int(start + (i+1) * filtering_window_size)
+
+        I_ph_of_window = np.abs(I_ph[first_index:last_index])
+        max_element = np.max(I_ph_of_window)
+        number_of_max = int(start + i * filtering_window_size + np.argmax(I_ph_of_window))
+
+        if max_element > eps and counter < max_counter:
+            Imax_ph.append(max_element)
+            Imax_ph_time.append(time_data[number_of_max])
+            counter += 1
 
     if len(Imax_ph) == 0:
         return np.array([0]), np.array([0])

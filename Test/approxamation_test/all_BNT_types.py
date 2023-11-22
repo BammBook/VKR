@@ -82,13 +82,13 @@ ang_3ph_2 = [1 * math.pi, 0 * math.pi]  # phase A
 
 coef_A_1ph_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_1ph[0], omega_t0=ang_1ph[1])
 coef_A_1ph_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_1ph[0], omega_t0=ang_1ph[1])
-print(f'coef_A_1ph_cold = {round(coef_A_1ph_cold, 3)}')
-print(f'coef_A_1ph_hot = {round(coef_A_1ph_hot, 3)}\n')
+# print(f'coef_A_1ph_cold = {round(coef_A_1ph_cold, 3)}')
+# print(f'coef_A_1ph_hot = {round(coef_A_1ph_hot, 3)}\n')
 
 coef_A_2ph_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_2ph[0], omega_t0=ang_2ph[1])
 coef_A_2ph_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_2ph[0], omega_t0=ang_2ph[1])
-print(f'coef_A_2ph_cold = {round(coef_A_2ph_cold, 3)}')
-print(f'coef_A_2ph_hot = {round(coef_A_2ph_hot, 3)}\n')
+# print(f'coef_A_2ph_cold = {round(coef_A_2ph_cold, 3)}')
+# print(f'coef_A_2ph_hot = {round(coef_A_2ph_hot, 3)}\n')
 
 coef_A_3ph_1_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
 coef_A_3ph_1_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
@@ -98,8 +98,8 @@ coef_A_3ph_2_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_3ph_2[0], omega_t0=a
 
 coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5 * B_r
 coef_A_diff_time_hot = coef_A_1ph_hot + 0.37 + 0.5 * B_r
-print(coef_A_diff_time_cold)
-print(coef_A_diff_time_hot)
+# print(coef_A_diff_time_cold)
+# print(coef_A_diff_time_hot)
 
 """кривые С"""
 curve_C_1ph_cold = math.sqrt(2) * effective_current(coef_A_1ph_cold) * generic_curve
@@ -199,11 +199,11 @@ curve_first_harm_diff_time_hot = first_harm_effective(coef_A_diff_time_hot) * ge
 
 
 # """Сравнение максимумов"""
-# md = ModelData("Model1")
-# time_duration = 2.5
-# tau = 200
+md = ModelData("Model1")
+time_duration = 2.5
+tau = 200
 
-# data_1ph = DataClass("csv", "1ph_True_360/", "tau_" + str(tau), tau=tau, time_duration=time_duration)
+data_1ph = DataClass("csv", "1ph_True_360/", "tau_" + str(tau), tau=tau, time_duration=time_duration)
 # #
 # compare_max(data_time=data_1ph.time,
 #             data_max_time=data_1ph.Imax_A_time,
