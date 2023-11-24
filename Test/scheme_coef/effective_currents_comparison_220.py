@@ -13,17 +13,30 @@ VOLTAGE_LEVELS = Literal['220', '110']
 MODEL_NAMES = Literal['Model220', 'Model110']
 
 
-file_names = {'1ph': '_BTN1phaseA0B180C180',
-              '2ph': '_BTN2phase',
-              '3ph1': '_BTN3phase90',
-              '3ph2': '_BTN3phase0',
-              'diff_time': '_BTN3phaseA0B90C90'}
+# file_names = {'1ph': '_BTN1phaseA0B180C180',
+#               '2ph': '_BTN2phase',
+#               '3ph1': '_BTN3phase90',
+#               '3ph2': '_BTN3phase0',
+#               'diff_time': '_BTN3phaseA0B90C90'}
+
+#1 ms
+# file_names = {'1ph': 'BTN1phaseA0BC18',
+#               '2ph': 'BTN2phaseBC(A18)',
+#               '3ph1': 'BTN3phase90',
+#               '3ph2': 'BTN3phase0',
+#               'diff_time': 'BTNA0BC90'}
+
+#2 ms
+file_names = {'1ph': 'BTN1phaseA0BC18',
+              '2ph': 'BTN2phaseBC(A36)',
+              '3ph1': 'BTN3phase90',
+              '3ph2': 'BTN3phase0',
+              'diff_time': 'BTNA0BC90'}
 
 
-
-def data_reader(voltage_level: VOLTAGE_LEVELS,
+def data_reader(voltage_level,
                 btn_type: BTN_TYPES,
-                model_name: MODEL_NAMES,
+                model_name,
                 filepath,
                 time_duration):
 
@@ -39,8 +52,8 @@ def data_reader(voltage_level: VOLTAGE_LEVELS,
                      voltage_level + file_name, tau=tau, time_duration=time_duration)
 
     eff_curr = EffectiveCurrents("csv",
-                                 voltage_level + "kV_new/",
-                                 "TO" + voltage_level + file_name,
+                                 filepath,
+                                 "Id" + voltage_level + file_name,
                                  time_duration=time_duration)
 
     return data, eff_curr
@@ -54,10 +67,15 @@ average_C1_1ph = 0.771
 average_C0_diff_time_C = -0.3
 average_C1_diff_time_C = 0.828
 
+# B_s = 1.2822
+# B_r_A = 0.0879
+# B_r_B = 0.0862
+# B_r_C = 0.1742  # -0.1742 по расчетам
+
 B_s = 1.2822
-B_r_A = 0.0879
-B_r_B = 0.0862
-B_r_C = -0.1742
+B_r_A = 0.105
+B_r_B = 0.0989
+B_r_C = 0.204  # -0.204 по расчетам
 
 ang_1ph = [1 * math.pi, 0 * math.pi]  # phase A
 ang_2ph = [(7 / 6) * math.pi, (-1 / 6) * math.pi]  # phase B
@@ -67,22 +85,27 @@ ang_diff_time = [1 * math.pi - math.radians(210), math.radians(210)]  # phase C
 
 
 coef_A_1ph_cold = coef_A(B_s=B_s, B_r=B_r_A, omega_t=ang_1ph[0], omega_t0=ang_1ph[1])
-coef_A_2ph_cold = coef_A(B_s=B_s, B_r=B_r_B, omega_t=ang_2ph[0], omega_t0=ang_2ph[1])
-coef_A_3ph1_cold = coef_A(B_s=B_s, B_r=B_r_B, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
+coef_A_2ph_cold = coef_A(B_s=B_s, B_r=B_r_C, omega_t=ang_2ph[0], omega_t0=ang_2ph[1])
+coef_A_3ph1_cold = coef_A(B_s=B_s, B_r=B_r_C, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
 coef_A_3ph2_cold = coef_A(B_s=B_s, B_r=B_r_A, omega_t=ang_3ph_2[0], omega_t0=ang_3ph_2[1])
 
 coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5 * B_r_A
 # coef_A_diff_time_cold = coef_A(B_s=B_s, B_r=B_r_C, omega_t=ang_diff_time[0], omega_t0=ang_diff_time[1])
 
-start = 'diff_time'
+start = '1ph'
+filepath = 'BTN_220kV_24.11/'
+model_name = 'Model220'
+voltage_level = '220'
 
 if start == '1ph':
 
-    data_220_1ph, eff_curr_220_1ph = data_reader(voltage_level='220',
-                                                 btn_type='1ph',
-                                                 model_name='Model220',
-                                                 filepath='BTN_220kV_17.11/',
-                                                 time_duration=time_duration)
+    data_1ph, eff_curr_1ph = data_reader(voltage_level=voltage_level,
+                                         btn_type='1ph',
+                                         model_name=model_name,
+                                         filepath=filepath,
+                                         time_duration=time_duration)
+
+
     # plt.plot(data_220_1ph.time, data_220_1ph.I_A)
     # plt.plot(data_220_1ph.time, data_220_1ph.I_B)
     # plt.plot(data_220_1ph.time, data_220_1ph.I_C)
@@ -94,12 +117,12 @@ if start == '1ph':
     # plt.legend(['I_ph', 'I_zero_seq'])
     # plt.show()
 
-    compare_effective_current(eff_curr_time=eff_curr_220_1ph.time,
-                              eff_curr_data=eff_curr_220_1ph.I_A_eff_ph,
-                              model_Imax_relative_time=data_220_1ph.Imax_A_relative_time_partial,
-                              model_Imax_time=data_220_1ph.Imax_A_time[:len(data_220_1ph.Imax_A_relative_time_partial)],
-                              time_shift=0.013,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_1ph.time,
+                              eff_curr_data=eff_curr_1ph.I_A_eff_ph,
+                              model_Imax_relative_time=data_1ph.Imax_A_relative_time_partial,
+                              model_Imax_time=data_1ph.Imax_A_time[:len(data_1ph.Imax_A_relative_time_partial)],
+                              time_shift=0.015,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='1ph',
@@ -108,12 +131,12 @@ if start == '1ph':
                               title='1-фазный БТН',
                               phase='Фазный ток ф.A')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_1ph.time,
-                              eff_curr_data=eff_curr_220_1ph.I_AB_eff,
-                              model_Imax_relative_time=data_220_1ph.Imax_A_relative_time_partial,
-                              model_Imax_time=data_220_1ph.Imax_A_time[:len(data_220_1ph.Imax_A_relative_time_partial)],
-                              time_shift=0.013,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_1ph.time,
+                              eff_curr_data=eff_curr_1ph.I_AB_eff,
+                              model_Imax_relative_time=data_1ph.Imax_A_relative_time_partial,
+                              model_Imax_time=data_1ph.Imax_A_time[:len(data_1ph.Imax_A_relative_time_partial)],
+                              time_shift=0.015,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='1ph',
@@ -122,12 +145,12 @@ if start == '1ph':
                               title='1-фазный БТН',
                               phase='Линейный ток (контур АВ)')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_1ph.time,
-                              eff_curr_data=eff_curr_220_1ph.I_3I0_eff,
-                              model_Imax_relative_time=data_220_1ph.Imax_A_relative_time_partial,
-                              model_Imax_time=data_220_1ph.Imax_A_time[:len(data_220_1ph.Imax_A_relative_time_partial)],
-                              time_shift=0.013,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_1ph.time,
+                              eff_curr_data=eff_curr_1ph.I_3I0_eff,
+                              model_Imax_relative_time=data_1ph.Imax_A_relative_time_partial,
+                              model_Imax_time=data_1ph.Imax_A_time[:len(data_1ph.Imax_A_relative_time_partial)],
+                              time_shift=0.015,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='1ph',
@@ -151,11 +174,11 @@ if start == '1ph':
 
 if start == '2ph':
 
-    data_220_2ph, eff_curr_220_2ph = data_reader(voltage_level='220',
-                                                 btn_type='2ph',
-                                                 model_name='Model220',
-                                                 filepath='BTN_220kV_17.11/',
-                                                 time_duration=time_duration)
+    data_2ph, eff_curr_2ph = data_reader(voltage_level=voltage_level,
+                                         btn_type='2ph',
+                                         model_name=model_name,
+                                         filepath=filepath,
+                                         time_duration=time_duration)
     # plt.plot(data_220_2ph.time, data_220_2ph.I_A)
     # plt.plot(data_220_2ph.time, data_220_2ph.I_B)
     # plt.plot(data_220_2ph.time, data_220_2ph.I_C)
@@ -168,12 +191,12 @@ if start == '2ph':
     # plt.legend(['I_A', 'I_B', 'I_C'])
     # plt.show()
 
-    compare_effective_current(eff_curr_time=eff_curr_220_2ph.time,
-                              eff_curr_data=eff_curr_220_2ph.I_C_eff_ph,
-                              model_Imax_relative_time=data_220_2ph.Imax_C_relative_time_partial,
-                              model_Imax_time=data_220_2ph.Imax_C_time[:len(data_220_2ph.Imax_C_relative_time_partial)],
-                              time_shift=0.013,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_2ph.time,
+                              eff_curr_data=eff_curr_2ph.I_C_eff_ph,
+                              model_Imax_relative_time=data_2ph.Imax_C_relative_time_partial,
+                              model_Imax_time=data_2ph.Imax_C_time[:len(data_2ph.Imax_C_relative_time_partial)],
+                              time_shift=0.016,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='2ph',
@@ -182,12 +205,12 @@ if start == '2ph':
                               title='2-фазный БТН',
                               phase='Фазный ток ф.C')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_2ph.time,
-                              eff_curr_data=eff_curr_220_2ph.I_BC_eff,
-                              model_Imax_relative_time=data_220_2ph.Imax_B_relative_time_partial,
-                              model_Imax_time=data_220_2ph.Imax_B_time[:len(data_220_2ph.Imax_B_relative_time_partial)],
-                              time_shift=0.013,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_2ph.time,
+                              eff_curr_data=eff_curr_2ph.I_BC_eff,
+                              model_Imax_relative_time=data_2ph.Imax_B_relative_time_partial,
+                              model_Imax_time=data_2ph.Imax_B_time[:len(data_2ph.Imax_B_relative_time_partial)],
+                              time_shift=0.015,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='2ph',
@@ -196,12 +219,12 @@ if start == '2ph':
                               title='2-фазный БТН',
                               phase='Линейный ток (контур BC)')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_2ph.time,
-                              eff_curr_data=eff_curr_220_2ph.I_3I0_eff,
-                              model_Imax_relative_time=data_220_2ph.Imax_B_relative_time_partial,
-                              model_Imax_time=data_220_2ph.Imax_B_time[:len(data_220_2ph.Imax_B_relative_time_partial)],
-                              time_shift=0.013,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_2ph.time,
+                              eff_curr_data=eff_curr_2ph.I_3I0_eff,
+                              model_Imax_relative_time=data_2ph.Imax_B_relative_time_partial,
+                              model_Imax_time=data_2ph.Imax_B_time[:len(data_2ph.Imax_B_relative_time_partial)],
+                              time_shift=0.015,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='2ph',
@@ -212,32 +235,37 @@ if start == '2ph':
 
 if start == '3ph1':
 
-    data_220_3ph1, eff_curr_220_3ph1 = data_reader(voltage_level='220',
-                                                   btn_type='3ph1',
-                                                   model_name='Model220',
-                                                   filepath='BTN_220kV_17.11/',
-                                                   time_duration=time_duration)
+    data_3ph1, eff_curr_3ph1 = data_reader(voltage_level=voltage_level,
+                                           btn_type='3ph1',
+                                           model_name=model_name,
+                                           filepath=filepath,
+                                           time_duration=time_duration)
+    plt.plot(data_3ph1.time, data_3ph1.I_A)
+    plt.plot(data_3ph1.time, data_3ph1.I_B)
+    plt.plot(data_3ph1.time, data_3ph1.I_C)
+    plt.legend(['I_A', 'I_B', 'I_C'])
+    plt.show()
 
-    compare_effective_current(eff_curr_time=eff_curr_220_3ph1.time,
-                              eff_curr_data=eff_curr_220_3ph1.I_B_eff_ph,
-                              model_Imax_relative_time=data_220_3ph1.Imax_B_relative_time_partial,
-                              model_Imax_time=data_220_3ph1.Imax_B_time[:len(data_220_3ph1.Imax_B_relative_time_partial)],
-                              time_shift=0.014,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_3ph1.time,
+                              eff_curr_data=eff_curr_3ph1.I_C_eff_ph,
+                              model_Imax_relative_time=data_3ph1.Imax_C_relative_time_partial,
+                              model_Imax_time=data_3ph1.Imax_C_time[:len(data_3ph1.Imax_C_relative_time_partial)],
+                              time_shift=0.015,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='3ph1',
                               relay_type='phase',
                               coef_A=coef_A_3ph1_cold,
                               title='3-фазный БТН\n(тип 1)',
-                              phase='Фазный ток ф.B')
+                              phase='Фазный ток ф.C')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_3ph1.time,
-                              eff_curr_data=eff_curr_220_3ph1.I_BC_eff,
-                              model_Imax_relative_time=data_220_3ph1.Imax_B_relative_time_partial,
-                              model_Imax_time=data_220_3ph1.Imax_B_time[:len(data_220_3ph1.Imax_B_relative_time_partial)],
+    compare_effective_current(eff_curr_time=eff_curr_3ph1.time,
+                              eff_curr_data=eff_curr_3ph1.I_BC_eff,
+                              model_Imax_relative_time=data_3ph1.Imax_C_relative_time_partial,
+                              model_Imax_time=data_3ph1.Imax_C_time[:len(data_3ph1.Imax_C_relative_time_partial)],
                               time_shift=0.015,
-                              model_data_name="Model220",
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='3ph1',
@@ -246,12 +274,12 @@ if start == '3ph1':
                               title='3-фазный БТН\n(тип 1)',
                               phase='Линейный ток (контур ВС)')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_3ph1.time,
-                              eff_curr_data=eff_curr_220_3ph1.I_3I0_eff,
-                              model_Imax_relative_time=data_220_3ph1.Imax_B_relative_time_partial,
-                              model_Imax_time=data_220_3ph1.Imax_B_time[:len(data_220_3ph1.Imax_B_relative_time_partial)],
+    compare_effective_current(eff_curr_time=eff_curr_3ph1.time,
+                              eff_curr_data=eff_curr_3ph1.I_3I0_eff,
+                              model_Imax_relative_time=data_3ph1.Imax_C_relative_time_partial,
+                              model_Imax_time=data_3ph1.Imax_C_time[:len(data_3ph1.Imax_C_relative_time_partial)],
                               time_shift=0.015,
-                              model_data_name="Model220",
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='3ph1',
@@ -262,18 +290,18 @@ if start == '3ph1':
 
 if start == '3ph2':
 
-    data_220_3ph2, eff_curr_220_3ph2 = data_reader(voltage_level='220',
-                                                   btn_type='3ph2',
-                                                   model_name='Model220',
-                                                   filepath='BTN_220kV_17.11/',
-                                                   time_duration=time_duration)
+    data_3ph2, eff_curr_3ph2 = data_reader(voltage_level=voltage_level,
+                                           btn_type='3ph2',
+                                           model_name=model_name,
+                                           filepath=filepath,
+                                           time_duration=time_duration)
 
-    compare_effective_current(eff_curr_time=eff_curr_220_3ph2.time,
-                              eff_curr_data=eff_curr_220_3ph2.I_A_eff_ph,
-                              model_Imax_relative_time=data_220_3ph2.Imax_A_relative_time_partial,
-                              model_Imax_time=data_220_3ph2.Imax_A_time[:len(data_220_3ph2.Imax_A_relative_time_partial)],
-                              time_shift=0.014,
-                              model_data_name="Model220",
+    compare_effective_current(eff_curr_time=eff_curr_3ph2.time,
+                              eff_curr_data=eff_curr_3ph2.I_A_eff_ph,
+                              model_Imax_relative_time=data_3ph2.Imax_A_relative_time_partial,
+                              model_Imax_time=data_3ph2.Imax_A_time[:len(data_3ph2.Imax_A_relative_time_partial)],
+                              time_shift=0.015,
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='3ph2',
@@ -282,12 +310,12 @@ if start == '3ph2':
                               title='3-фазный БТН\n(тип 2)',
                               phase='Фазный ток ф.A')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_3ph2.time,
-                              eff_curr_data=eff_curr_220_3ph2.I_CA_eff,
-                              model_Imax_relative_time=data_220_3ph2.Imax_C_relative_time_partial,
-                              model_Imax_time=data_220_3ph2.Imax_C_time[:len(data_220_3ph2.Imax_C_relative_time_partial)],
+    compare_effective_current(eff_curr_time=eff_curr_3ph2.time,
+                              eff_curr_data=eff_curr_3ph2.I_CA_eff,
+                              model_Imax_relative_time=data_3ph2.Imax_C_relative_time_partial,
+                              model_Imax_time=data_3ph2.Imax_C_time[:len(data_3ph2.Imax_C_relative_time_partial)],
                               time_shift=0.015,
-                              model_data_name="Model220",
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='3ph2',
@@ -296,12 +324,12 @@ if start == '3ph2':
                               title='3-фазный БТН\n(тип 2)',
                               phase='Линейный ток (контур CA)')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_3ph2.time,
-                              eff_curr_data=eff_curr_220_3ph2.I_3I0_eff,
-                              model_Imax_relative_time=data_220_3ph2.Imax_C_relative_time_partial,
-                              model_Imax_time=data_220_3ph2.Imax_C_time[:len(data_220_3ph2.Imax_C_relative_time_partial)],
+    compare_effective_current(eff_curr_time=eff_curr_3ph2.time,
+                              eff_curr_data=eff_curr_3ph2.I_3I0_eff,
+                              model_Imax_relative_time=data_3ph2.Imax_C_relative_time_partial,
+                              model_Imax_time=data_3ph2.Imax_C_time[:len(data_3ph2.Imax_C_relative_time_partial)],
                               time_shift=0.015,
-                              model_data_name="Model220",
+                              model_data_name=model_name,
                               average_C0=average_C0_1ph,
                               average_C1=average_C1_1ph,
                               btn_type='3ph2',
@@ -312,23 +340,23 @@ if start == '3ph2':
 
 if start == 'diff_time':
 
-    data_220_diff_time, eff_curr_220_diff_time = data_reader(voltage_level='220',
-                                                             btn_type='diff_time',
-                                                             model_name='Model220',
-                                                             filepath='BTN_220kV_17.11/',
-                                                             time_duration=time_duration)
+    data_diff_time, eff_curr_diff_time = data_reader(voltage_level=voltage_level,
+                                                     btn_type='diff_time',
+                                                     model_name=model_name,
+                                                     filepath=filepath,
+                                                     time_duration=time_duration)
     # plt.plot(data_220_diff_time.time, data_220_diff_time.I_A)
     # plt.plot(data_220_diff_time.time, data_220_diff_time.I_B)
     # plt.plot(data_220_diff_time.time, data_220_diff_time.I_C)
     # plt.legend(['I_A', 'I_B', 'I_C'])
     # plt.show()
 
-    compare_effective_current(eff_curr_time=eff_curr_220_diff_time.time,
-                              eff_curr_data=eff_curr_220_diff_time.I_C_eff_ph,
-                              model_Imax_relative_time=data_220_diff_time.Imax_C_relative_time_partial,
-                              model_Imax_time=data_220_diff_time.Imax_C_time[:len(data_220_diff_time.Imax_C_relative_time_partial)],
+    compare_effective_current(eff_curr_time=eff_curr_diff_time.time,
+                              eff_curr_data=eff_curr_diff_time.I_C_eff_ph,
+                              model_Imax_relative_time=data_diff_time.Imax_C_relative_time_partial,
+                              model_Imax_time=data_diff_time.Imax_C_time[:len(data_diff_time.Imax_C_relative_time_partial)],
                               time_shift=0.017,
-                              model_data_name="Model220",
+                              model_data_name=model_name,
                               average_C0=average_C0_diff_time_C,
                               average_C1=average_C1_diff_time_C,
                               btn_type='diff_time',
@@ -337,12 +365,12 @@ if start == 'diff_time':
                               title='Последовательный БТН',
                               phase='Фазный ток ф.C')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_diff_time.time,
-                              eff_curr_data=eff_curr_220_diff_time.I_CA_eff,
-                              model_Imax_relative_time=data_220_diff_time.Imax_C_relative_time_partial,
-                              model_Imax_time=data_220_diff_time.Imax_C_time[:len(data_220_diff_time.Imax_C_relative_time_partial)],
+    compare_effective_current(eff_curr_time=eff_curr_diff_time.time,
+                              eff_curr_data=eff_curr_diff_time.I_CA_eff,
+                              model_Imax_relative_time=data_diff_time.Imax_C_relative_time_partial,
+                              model_Imax_time=data_diff_time.Imax_C_time[:len(data_diff_time.Imax_C_relative_time_partial)],
                               time_shift=0.016,
-                              model_data_name="Model220",
+                              model_data_name=model_name,
                               average_C0=average_C0_diff_time_C,
                               average_C1=average_C1_diff_time_C,
                               btn_type='diff_time',
@@ -351,12 +379,12 @@ if start == 'diff_time':
                               title='Последовательный БТН',
                               phase='Линейный ток (контур CA)')
 
-    compare_effective_current(eff_curr_time=eff_curr_220_diff_time.time,
-                              eff_curr_data=eff_curr_220_diff_time.I_3I0_eff,
-                              model_Imax_relative_time=data_220_diff_time.Imax_C_relative_time_partial,
-                              model_Imax_time=data_220_diff_time.Imax_C_time[:len(data_220_diff_time.Imax_C_relative_time_partial)],
+    compare_effective_current(eff_curr_time=eff_curr_diff_time.time,
+                              eff_curr_data=eff_curr_diff_time.I_3I0_eff,
+                              model_Imax_relative_time=data_diff_time.Imax_C_relative_time_partial,
+                              model_Imax_time=data_diff_time.Imax_C_time[:len(data_diff_time.Imax_C_relative_time_partial)],
                               time_shift=0.019,
-                              model_data_name="Model220",
+                              model_data_name=model_name,
                               average_C0=average_C0_diff_time_C,
                               average_C1=average_C1_diff_time_C,
                               btn_type='diff_time',

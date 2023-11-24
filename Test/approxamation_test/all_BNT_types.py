@@ -24,6 +24,11 @@ average_C1_1ph = 0.771
 average_C0_2ph = -0.234
 average_C1_2ph = 0.876
 
+# 2 Phase BNT
+# for phase B, C (NO Grounded)
+average_C0_2ph_no_Gnd = -0.271
+average_C1_2ph_no_Gnd = 0.915
+
 # 3 Phase BNT (type 1)
 # for phase B, C
 average_C0_3ph_1 = -0.239
@@ -45,22 +50,24 @@ average_C1_diff_time_C = 0.828
 x_data = np.arange(0, 5, 0.01)
 generic_curve_1ph = exp_1(x_data, average_C0_1ph, average_C1_1ph)
 generic_curve_2ph = exp_1(x_data, average_C0_2ph, average_C1_2ph)
+generic_curve_2ph_no_Gnd = exp_1(x_data, average_C0_2ph_no_Gnd, average_C1_2ph_no_Gnd)
 generic_curve_3ph_1 = exp_1(x_data, average_C0_3ph_1, average_C1_3ph_1)
 generic_curve_3ph_2 = exp_1(x_data, average_C0_3ph_2, average_C1_3ph_2)
 generic_curve_diff_time = exp_1(x_data, average_C0_diff_time_A, average_C1_diff_time_A)
-# generic_curve_diff_time_C = exp_1(x_data, average_C0_diff_time_C, average_C1_diff_time_C)
 
 generic_curve = generic_curve_1ph
+generic_curve_diff_time_C = exp_1(x_data, average_C0_diff_time_C, average_C1_diff_time_C)
 # presentation()  # коэффииенты затухания
 # plt.grid(True)
 # plt.plot(x_data, generic_curve_1ph)
+# plt.plot(x_data, generic_curve_2ph_no_Gnd)
 # plt.plot(x_data, generic_curve_2ph)
 # plt.plot(x_data, generic_curve_3ph_1)
 # plt.plot(x_data, generic_curve_3ph_2)
 # plt.plot(x_data, generic_curve_diff_time)
-# plt.plot(x_data, generic_curve_diff_time_C)
+# # plt.plot(x_data, generic_curve_diff_time_C)
 #
-# plt.legend(['1ф.БТН', '2ф.БТН', '3ф.БТН (1 тип)', '3ф.БТН (2 тип)', 'Последовательный БТН (ф.А)'])
+# plt.legend(['1ф.БТН', '2ф.БТН (Изолир.)', '2ф.БТН (Заземл.)', '3ф.БТН (1 тип)', '3ф.БТН (2 тип)', 'Последовательный БТН (ф.А)'])
 #
 # plt.xlim([x_data[0], x_data[-1]])
 # plt.ylim([-0.05, 1.05])
@@ -72,11 +79,12 @@ generic_curve = generic_curve_1ph
 
 """---------"""
 
-B_s_cold = 1.25
+B_s_cold = 1.21
 B_s_hot = 1.38
-B_r = 0
+B_r = 0.4
 ang_1ph = [1 * math.pi, 0 * math.pi]  # phase A
 ang_2ph = [(7 / 6) * math.pi, (-1 / 6) * math.pi]  # phase B
+ang_2ph_no_Gnd = [1 * math.pi, (-1 / 6) * math.pi]  # phase B
 ang_3ph_1 = [(7 / 6) * math.pi, (-1 / 6) * math.pi]  # phase B
 ang_3ph_2 = [1 * math.pi, 0 * math.pi]  # phase A
 
@@ -89,6 +97,9 @@ coef_A_2ph_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_2ph[0], omega_t0=ang
 coef_A_2ph_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_2ph[0], omega_t0=ang_2ph[1])
 # print(f'coef_A_2ph_cold = {round(coef_A_2ph_cold, 3)}')
 # print(f'coef_A_2ph_hot = {round(coef_A_2ph_hot, 3)}\n')
+
+coef_A_2ph_no_Gnd_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_2ph_no_Gnd[0], omega_t0=ang_2ph_no_Gnd[1])
+coef_A_2ph_no_Gnd_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_2ph_no_Gnd[0], omega_t0=ang_2ph_no_Gnd[1])
 
 coef_A_3ph_1_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
 coef_A_3ph_1_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
@@ -108,6 +119,9 @@ curve_C_1ph_hot = math.sqrt(2) * effective_current(coef_A_1ph_hot) * generic_cur
 curve_C_2ph_cold = math.sqrt(2) * effective_current(coef_A_2ph_cold) * generic_curve
 curve_C_2ph_hot = math.sqrt(2) * effective_current(coef_A_2ph_hot) * generic_curve
 
+curve_C_2ph_no_Gnd_cold = math.sqrt(2) * effective_current(coef_A_2ph_no_Gnd_cold) * generic_curve_diff_time
+curve_C_2ph_no_Gnd_hot = math.sqrt(2) * effective_current(coef_A_2ph_no_Gnd_hot) * generic_curve_diff_time
+
 curve_C_3ph_1_cold = math.sqrt(2) * effective_current(coef_A_3ph_1_cold) * generic_curve
 curve_C_3ph_1_hot = math.sqrt(2) * effective_current(coef_A_3ph_1_hot) * generic_curve
 
@@ -124,6 +138,9 @@ curve_first_harm_eff_1ph_hot = first_harm_effective(coef_A_1ph_hot) * generic_cu
 # print(first_harm_effective(coef_A_1ph_cold))
 curve_first_harm_eff_2ph_cold = first_harm_effective(coef_A_2ph_cold) * generic_curve
 curve_first_harm_eff_2ph_hot = first_harm_effective(coef_A_2ph_hot) * generic_curve
+
+curve_first_harm_eff_2ph_no_Gnd_cold = first_harm_effective(coef_A_2ph_no_Gnd_cold) * generic_curve_diff_time
+curve_first_harm_eff_2ph_no_Gnd_hot = first_harm_effective(coef_A_2ph_no_Gnd_hot) * generic_curve_diff_time
 
 curve_first_harm_eff_3ph_1_cold = first_harm_effective(coef_A_3ph_1_cold) * generic_curve
 curve_first_harm_eff_3ph_1_hot = first_harm_effective(coef_A_3ph_1_hot) * generic_curve
@@ -144,6 +161,12 @@ curve_first_harm_diff_time_hot = first_harm_effective(coef_A_diff_time_hot) * ge
 # two_curves(x_data, curve_first_harm_eff_2ph_cold,
 #            x_data, curve_first_harm_eff_2ph_hot,
 #            legend=['2ф.БТН, холоднокат.', '2ф.БТН, горячекат.'],
+#            xlabel='t/'r'$\tau$',
+#            ylabel='C_1г, о.е.')
+
+# two_curves(x_data, curve_first_harm_eff_2ph_no_Gnd_cold,
+#            x_data, curve_first_harm_eff_2ph_no_Gnd_hot,
+#            legend=['2ф.БТН (Изолир.), холоднокат.', '2ф.БТН (Изолир.), горячекат.'],
 #            xlabel='t/'r'$\tau$',
 #            ylabel='C_1г, о.е.')
 #
@@ -177,7 +200,13 @@ curve_first_harm_diff_time_hot = first_harm_effective(coef_A_diff_time_hot) * ge
 #            legend=['2ф.БТН, холоднокат.', '2ф.БТН, горячекат.'],
 #            xlabel='t/'r'$\tau$',
 #            ylabel='C_b, о.е.')
-#
+
+two_curves(x_data, curve_C_2ph_no_Gnd_cold,
+           x_data, curve_C_2ph_no_Gnd_hot,
+           legend=['2ф.БТН, холоднокат.', '2ф.БТН, горячекат.'],
+           xlabel='t/'r'$\tau$',
+           ylabel='C_b, о.е.')
+
 # two_curves(x_data, curve_C_3ph_1_cold,
 #            x_data, curve_C_3ph_1_hot,
 #            legend=['3ф.БТН (1 тип), холоднокат.', '3ф.БТН (1 тип), горячекат.'],

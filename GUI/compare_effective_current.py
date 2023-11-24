@@ -17,7 +17,7 @@ columns = {'1ph': 0, '2ph': 1, '3ph1': 2, '3ph2': 3, 'diff_time': 4}
 rows = {'phase': 0, 'linear': 1, 'zero_sequence': 2}
 
 SCHEME_COEFFICIENTS = np.array([[1, 1, 1, 1, 1],
-                                [1, math.sqrt(3), math.sqrt(3), 1.26, 1.7],
+                                [math.sqrt(3), math.sqrt(3), math.sqrt(3), 1.3, math.sqrt(3)],
                                 [1, 1, 1, 0.7, 0.7]])
 
 
@@ -99,7 +99,7 @@ def compare_effective_current(eff_curr_time,
         # print(f'time (model) {buffer_time}')
         # print(f'model current: {buffer_current}\n')
 
-        error = np.abs(buffer_current - curve_first_harm_eff[:len(buffer_current)]) * 100 / buffer_current
+        error = (buffer_current - curve_first_harm_eff[:len(buffer_current)]) * 100 / buffer_current
         counter = 0
         print(title, phase)
         for i in range(len(error)):
