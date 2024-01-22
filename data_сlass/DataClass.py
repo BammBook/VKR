@@ -60,7 +60,7 @@ def set_Imax_and_t_max(I_ph: np.ndarray,
                 counter += 1
         return counter
 
-    eps = 0.2  # отсекает шумы снизу
+    eps = 0.1  # отсекает шумы снизу
 
     max_counter = 99  # костыль для 99 точек
     counter = 0  # костыль для 99 точек

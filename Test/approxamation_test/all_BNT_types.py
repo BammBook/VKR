@@ -81,7 +81,7 @@ generic_curve_diff_time_C = exp_1(x_data, average_C0_diff_time_C, average_C1_dif
 
 B_s_cold = 1.21
 B_s_hot = 1.38
-B_r = 0.4
+B_r = 0
 ang_1ph = [1 * math.pi, 0 * math.pi]  # phase A
 ang_2ph = [(7 / 6) * math.pi, (-1 / 6) * math.pi]  # phase B
 ang_2ph_no_Gnd = [1 * math.pi, (-1 / 6) * math.pi]  # phase B
@@ -100,6 +100,7 @@ coef_A_2ph_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_2ph[0], omega_t0=ang_2
 
 coef_A_2ph_no_Gnd_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_2ph_no_Gnd[0], omega_t0=ang_2ph_no_Gnd[1])
 coef_A_2ph_no_Gnd_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_2ph_no_Gnd[0], omega_t0=ang_2ph_no_Gnd[1])
+# print(f'coef_A_2ph_no_Gnd_cold = {coef_A_2ph_no_Gnd_cold}\n')
 
 coef_A_3ph_1_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
 coef_A_3ph_1_hot = coef_A(B_s=B_s_hot, B_r=B_r, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
@@ -201,11 +202,11 @@ curve_first_harm_diff_time_hot = first_harm_effective(coef_A_diff_time_hot) * ge
 #            xlabel='t/'r'$\tau$',
 #            ylabel='C_b, о.е.')
 
-two_curves(x_data, curve_C_2ph_no_Gnd_cold,
-           x_data, curve_C_2ph_no_Gnd_hot,
-           legend=['2ф.БТН, холоднокат.', '2ф.БТН, горячекат.'],
-           xlabel='t/'r'$\tau$',
-           ylabel='C_b, о.е.')
+# two_curves(x_data, curve_C_2ph_no_Gnd_cold,
+#            x_data, curve_C_2ph_no_Gnd_hot,
+#            legend=['2ф.БТН, холоднокат.', '2ф.БТН, горячекат.'],
+#            xlabel='t/'r'$\tau$',
+#            ylabel='C_b, о.е.')
 
 # two_curves(x_data, curve_C_3ph_1_cold,
 #            x_data, curve_C_3ph_1_hot,
@@ -259,6 +260,29 @@ data_1ph = DataClass("csv", "1ph_True_360/", "tau_" + str(tau), tau=tau, time_du
 #             coef_A=coef_A_2ph_cold,
 #             phase='B',
 #             title="2ф. БТН")
+# data_2ph_no_Gnd = DataClass("csv", "BNT_2ph_no_gnd/", "tau_" + str(tau), tau=tau, time_duration=time_duration)
+#
+# plt.plot(data_2ph_no_Gnd.time, data_2ph_no_Gnd.I_A)
+# plt.plot(data_2ph_no_Gnd.time, data_2ph_no_Gnd.I_B)
+# plt.plot(data_2ph_no_Gnd.time, data_2ph_no_Gnd.I_C)
+# plt.legend(['I_A', 'I_B', 'I_C'])
+# plt.show()
+#
+#
+# compare_max(data_time=data_2ph_no_Gnd.time,
+#             data_max_time=data_2ph_no_Gnd.Imax_B_time,
+#             data_Imax_relative_time=data_2ph_no_Gnd.Imax_B_relative_time,
+#             data_current=data_2ph_no_Gnd.I_B,
+#             data_max_current=data_2ph_no_Gnd.Imax_B,
+#             average_C0=average_C0_2ph_no_Gnd,
+#             average_C1=average_C1_2ph_no_Gnd,
+#             tau=tau,
+#             coef_A=coef_A_2ph_no_Gnd_cold,
+#             phase='B',
+#             title="2ф. БТН\n(Изолир. нейтраль)",
+#             model_data="Model1",
+#             error=False)
+
 #
 # data_3ph_1 = DataClass("csv", "3ph_BNT_(1_type)/", "tau_" + str(tau), tau=tau, time_duration=time_duration)
 #
@@ -274,7 +298,7 @@ data_1ph = DataClass("csv", "1ph_True_360/", "tau_" + str(tau), tau=tau, time_du
 #             phase='B',
 #             title="3ф. БТН (1 тип)")
 #
-# data_3ph_2 = DataClass("csv", "3ph_BNT_(2_type)/", "tau_" + str(tau), tau=tau, time_duration=time_duration)
+data_3ph_2 = DataClass("csv", "3ph_BNT_(2_type)/", "tau_" + str(tau), tau=tau, time_duration=time_duration)
 #
 # compare_max(data_time=data_3ph_2.time,
 #             data_max_time=data_3ph_2.Imax_A_time,

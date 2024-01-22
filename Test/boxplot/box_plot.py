@@ -32,7 +32,7 @@ time_duration = 2.5
 
 for i in range(quantity_of_graph):
     tau.append((i + 1) * 20)
-    data.append(DataClass("csv", "2ph_diff_time/", "tau_" + str(tau[i]), tau=tau[i],  time_duration=time_duration))
+    data.append(DataClass("csv", "BNT_2ph_no_gnd/", "tau_" + str(tau[i]), tau=tau[i],  time_duration=time_duration))
 
 
 average_C0 = -0.273
@@ -46,11 +46,13 @@ B_r = 0
 
 ang_1ph = [1 * math.pi, 0 * math.pi]  # phase A
 ang_2ph = [(7 / 6) * math.pi, (-1 / 6) * math.pi]  # phase B
+ang_2ph_no_Gnd = [1 * math.pi, (-1 / 6) * math.pi]  # phase B
 ang_3ph_1 = [(7 / 6) * math.pi, (-1 / 6) * math.pi]  # phase B
 ang_3ph_2 = [1 * math.pi, 0 * math.pi]  # phase A
 
 coef_A_1ph_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_1ph[0], omega_t0=ang_1ph[1])
 coef_A_2ph_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_2ph[0], omega_t0=ang_2ph[1])
+coef_A_2ph_no_Gnd_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_2ph_no_Gnd[0], omega_t0=ang_2ph_no_Gnd[1])
 coef_A_3ph_1_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_3ph_1[0], omega_t0=ang_3ph_1[1])
 coef_A_3ph_2_cold = coef_A(B_s=B_s_cold, B_r=B_r, omega_t=ang_3ph_2[0], omega_t0=ang_3ph_2[1])
 coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5*B_r
@@ -58,7 +60,7 @@ coef_A_diff_time_cold = coef_A_1ph_cold + 0.37 + 0.5*B_r
 
 """box_plot"""
 md = ModelData("Model1")
-number_of_measurement_point = len(data[0].Imax_C_time)
+number_of_measurement_point = len(data[0].Imax_B_time)
 # error = np.zeros((quantity_of_graph, number_of_measurement_point))
 
 error = []
@@ -66,17 +68,17 @@ error = []
 # матрица со строками разной длины. Значеняи ошибки от времени
 for i in range(quantity_of_graph):
 
-    approximated_curve = exp_1(data[i].Imax_C_relative_time,
+    approximated_curve = exp_1(data[i].Imax_B_relative_time,
                                average_C0_diff_time,
                                average_C1_diff_time)
     # model_data
     X = 2 * math.pi * md.f * md.R * tau[i] * 1e-3  # X is variable
-    coef = math.sqrt(2 / 3) * md.U_nom / (math.sqrt(X ** 2 + md.R ** 2)) * (1+coef_A_diff_time_cold)
-    approximated_graph = -approximated_curve * coef
+    coef = math.sqrt(2 / 3) * md.U_nom / (math.sqrt(X ** 2 + md.R ** 2)) * (1+coef_A_2ph_no_Gnd_cold)
+    approximated_graph = approximated_curve * coef
 
-    error_buff = set_relative_error(data[i].Imax_C, approximated_graph)
+    error_buff = set_relative_error(data[i].Imax_B, approximated_graph)
     buffer = []
-    for j in range(len(data[i].Imax_C_relative_time_partial)):
+    for j in range(len(data[i].Imax_B_relative_time_partial)):
         buffer.append(error_buff[j])
     error.append(buffer)
 # print(error)

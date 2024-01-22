@@ -51,22 +51,22 @@ coef_A_diff_time_cold_C = coef_A(B_s=B_s, B_r=B_r_C, omega_t=ang_diff_time_C[0],
 
 
 
-# data = DataClass("csv", "220kV_new/", "220_BTN1phaseA0B180C180", tau=tau, time_duration=time_duration)
-# # print(data.Imax_A)
-# compare_max(data_time=data.time,
-#             data_max_time=data.Imax_A_time[:len(data.Imax_A_relative_time_partial)]+0.009,
-#             data_Imax_relative_time=data.Imax_A_relative_time_partial,
-#             data_current=data.I_A,
-#             data_max_current=data.Imax_A[:len(data.Imax_A_relative_time_partial)],
-#             average_C0=average_C0_1ph,
-#             average_C1=average_C1_1ph,
-#             tau=tau,
-#             coef_A=coef_A_1ph_cold,
-#             phase='A',
-#             title="Однофазный БТН",
-#             model_data="Model220",
-#             error=True)
-# #
+data = DataClass("csv", "220kV_new/", "220_BTN1phaseA0B180C180", tau=tau, time_duration=time_duration)
+# print(data.Imax_A)
+compare_max(data_time=data.time,
+            data_max_time=data.Imax_A_time[:len(data.Imax_A_relative_time_partial)]+0.009,
+            data_Imax_relative_time=data.Imax_A_relative_time_partial,
+            data_current=data.I_A,
+            data_max_current=data.Imax_A[:len(data.Imax_A_relative_time_partial)],
+            average_C0=average_C0_1ph,
+            average_C1=average_C1_1ph,
+            tau=tau,
+            coef_A=coef_A_1ph_cold,
+            phase='A',
+            title="Однофазный БТН",
+            model_data="Model220",
+            error=True)
+#
 #
 # data = DataClass("csv", "220kV_new/", "220_BTN2phase", tau=tau, time_duration=time_duration)
 #

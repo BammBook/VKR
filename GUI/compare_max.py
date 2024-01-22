@@ -28,8 +28,8 @@ def compare_max(data_time, data_max_time,
                                average_C0,
                                average_C1)
     md = ModelData(model_data)
-    # X = 2 * math.pi * md.f * md.R * tau * 1e-3  # X is variable
-    approximated_graph = np.abs(math.sqrt(2 / 3) * md.U_nom / (math.sqrt(md.X ** 2 + md.R ** 2)) * approximated_curve * (1 + coef_A))
+    X = 2 * math.pi * md.f * md.R * tau * 1e-3  # X is variable
+    approximated_graph = np.abs(math.sqrt(2 / 3) * md.U_nom / (math.sqrt(X ** 2 + md.R ** 2)) * approximated_curve * (1 + coef_A))
 
     """мгновенные и огибающая"""
     presentation()
